@@ -6,7 +6,7 @@ idea:2022.1
 mysql:8.0.26  
 spring:5.3.23
 
-项目的github链接地址：[SSMTemplate]([https://](https://github.com/KeenBash/SSMTemplate))
+项目的github链接地址：[SSMTemplate](https://github.com/KeenBash/SSMTemplate)
 
 模板文件结构
 
