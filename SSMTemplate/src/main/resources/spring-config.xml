@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           https://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 包扫描 -->
+    <context:component-scan base-package="com.ssm.template.service"/>
+
+    <!-- 导入jdbc.properties -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <!-- Hikari连接池 -->
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+        <property name="driverClassName" value="${hikari.driver}"/>
+        <property name="jdbcUrl" value="${hikari.url}"/>
+        <property name="username" value="${hikari.username}"/>
+        <property name="password" value="${hikari.password}"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!-- 设置映射文件的路径，只有映射文件的包和mapper接口的包不一致时需要设置 -->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+
+        <!-- 分页插件 -->
+        <!-- 这里可以设置插件，mybatis-config也可以 -->
+        <!-- <property name="plugins"> -->
+        <!--     <array> -->
+        <!--         <bean class="com.github.pagehelper.PageInterceptor"/> -->
+        <!--     </array> -->
+        <!-- </property> -->
+    </bean>
+
+    <!-- 扫描mapper接口的代理实现类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.ssm.template.mapper"/>
+    </bean>
+
+    <!-- 事务 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 开启事务注解 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>
