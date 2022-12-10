@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>登录</title>
+    </head>
+    <body>
+        <form action="/doLogin" method="post">
+            <div>
+                账号：
+                <input type="text" name="username">
+                <span th:text="${unameTip}" style="color: #ff2a29"/>
+            </div>
+            <div>
+                密码：
+                <input type="password" name="password" >
+                <span th:text="${pwdTip}" style="color: #ff2a29"/>
+            </div>
+            <div>
+                记住登录
+                <input type="checkbox" name="rememberMe" value="true">
+            </div>
+            <div>
+                <a href="/register">
+                    <input type="button" value="注册">
+                </a>
+                <input type="submit" value="登录">
+            </div>
+        </form>
+    </body>
+</html>

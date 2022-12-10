@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.template.mapper.UserMapper">
+    <select id="getUserByUsername" resultType="com.ssm.template.entity.User">
+        select *
+        from user
+        where username = #{username}
+    </select>
+
+    <insert id="registerUser">
+        insert into user(username, password, salt)
+        values (#{username}, #{password}, #{salt})
+    </insert>
+
+    <select id="getAllUsers" resultType="com.ssm.template.entity.User">
+        select *
+        from user
+    </select>
+
+    <select id="getRoleByUid" resultType="java.lang.String">
+        select rname
+        from role
+        where rid = (select rid
+                     from user_role
+                     where uid = #{uid})
+    </select>
+</mapper>

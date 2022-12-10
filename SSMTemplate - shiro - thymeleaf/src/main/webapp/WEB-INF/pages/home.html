@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>home</title>
+    </head>
+    <body>
+        <div>
+            欢迎用户：
+            <span th:text="${username}" />
+        </div>
+        <a href="/logout">登出</a>
+    </body>
+</html>

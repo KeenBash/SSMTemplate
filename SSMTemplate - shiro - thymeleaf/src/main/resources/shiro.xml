@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!-- 加密规则 -->
+    <!-- 加salt在认证realm里 -->
+    <bean id="matcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        <property name="hashAlgorithmName" value="MD5"/>
+        <property name="hashIterations" value="3"/>
+    </bean>
+
+    <!-- 自定义Realm -->
+    <bean id="myRealm" class="com.ssm.template.realm.MyRealm">
+        <!-- 使用加密器 -->
+        <property name="credentialsMatcher" ref="matcher"/>
+        <property name="cachingEnabled" value="true"/>
+        <property name="authorizationCachingEnabled" value="true"/>
+        <property name="authenticationCachingEnabled" value="true"/>
+        <property name="cacheManager" ref="ehCacheManager"/>
+    </bean>
+
+    <!-- 管理session -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <!-- 关闭首次登陆以及退出登陆后，地址会添加;jsession的问题 -->
+        <property name="sessionIdUrlRewritingEnabled" value="false"/>
+    </bean>
+
+    <!-- rememberMeCookie -->
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <property name="name" value="rememberMe"/>
+        <property name="path" value="/"/>
+        <property name="httpOnly" value="true"/>
+        <!-- 7 * 24 * 60 * 60 -->
+        <property name="maxAge" value="604800"/>
+    </bean>
+
+    <!-- rememberMeManager -->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <property name="cookie" ref="rememberMeCookie"/>
+        <property name="cipherKey" value="1234567887654321"/>
+    </bean>
+
+    <!-- 配置缓存管理器 -->
+    <bean id="ehCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:ehcache-shiro.xml"/>
+    </bean>
+
+
+    <!-- 配置WebSecurityManager -->
+    <bean id="webSecurityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="myRealm"/>
+        <property name="sessionManager" ref="sessionManager" />
+        <property name="rememberMeManager" ref="rememberMeManager"/>
+        <property name="cacheManager" ref="ehCacheManager"/>
+    </bean>
+
+    <!-- 配置过滤器 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="webSecurityManager"/>
+        <property name="loginUrl" value="/login"/>
+        <property name="filterChainDefinitions">
+            <!-- 路径规则 -->
+            <value>
+                /home=user
+                /manage=user
+                /logout=logout
+                /**=anon
+            </value>
+        </property>
+    </bean>
+</beans>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           https://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/aop
+                           https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 包扫描 -->
+    <context:component-scan base-package="com.ssm.template.service"/>
+
+    <!-- 引入shiro.xml -->
+    <!-- 注意配置文件加载顺序，出错会导致shiro配置失败 -->
+    <import resource="classpath:shiro.xml"/>
+
+    <!-- 导入jdbc.properties -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <!-- Hikari连接池 -->
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+        <property name="driverClassName" value="${hikari.driver}"/>
+        <property name="jdbcUrl" value="${hikari.url}"/>
+        <property name="username" value="${hikari.username}"/>
+        <property name="password" value="${hikari.password}"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!-- 设置映射文件的路径，只有映射文件的包和mapper接口的包不一致时需要设置 -->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+
+    <!-- 扫描mapper接口的代理实现类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.ssm.template.mapper"/>
+    </bean>
+
+    <!-- 事务 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 开启事务注解 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- aop自动代理 -->
+    <aop:aspectj-autoproxy/>
+
+</beans>

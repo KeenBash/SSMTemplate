@@ -1,5 +1,7 @@
 # SSMTemplate配置实例介绍
 
+**更新**加入了整合shiro和thymeleaf，文件SSMTemplate-shiro-thymeleaf
+
 这是SSM框架模板的使用介绍，整合了mybatis, hikari数据源, SpringMVC, log4j日志, junit, lombok, jacksson等依赖的文件集合，包含了这些依赖的基础配置和文件框架。
 
 idea:2022.1  
